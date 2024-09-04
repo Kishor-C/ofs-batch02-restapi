@@ -1,14 +1,18 @@
 package com.oracle.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.oracle.beans.Profile;
 import com.oracle.service.ProfileService;
 
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -34,6 +38,38 @@ public class ProfileController {
 	public Response read() {
 		List<Profile> list = service.findProfiles();
 		return Response.status(200).entity(list).build();
+	}
+	
+	// a web-service that can get the profile based on id
+	@Path("/byid/{id}")
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response read(@PathParam("id") int id) {
+		Profile p = service.findProfile(id);
+		if(p != null) {
+			return Response.status(200).entity(p).build();
+		} else {
+			// map stores data in key & value
+			Map<String, String> map = new HashMap<>();
+			map.put("message", "Sorry id: "+id+" not found");
+			return Response.status(404).entity(map).build();
+		}
+	}
+	// a web-service that can delete the profile based on id
+	@Path("/byid/{id}")
+	@DELETE
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response delete(@PathParam("id") int id) {
+		int status = service.deleteProfile(id);
+		if(status == 1) {
+			Map<String, String> map = new HashMap<>();
+			map.put("message", "Profile with an id: "+id+" deleted");
+			return Response.status(404).entity(map).build();
+		} else {
+			Map<String, String> map = new HashMap<>();
+			map.put("message", "Sorry id: "+id+" not found");
+			return Response.status(404).entity(map).build();
+		}
 	}
 	
 	@GET
