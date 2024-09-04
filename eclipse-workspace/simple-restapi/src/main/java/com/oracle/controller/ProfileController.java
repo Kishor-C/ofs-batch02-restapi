@@ -64,7 +64,7 @@ public class ProfileController {
 		if(status == 1) {
 			Map<String, String> map = new HashMap<>();
 			map.put("message", "Profile with an id: "+id+" deleted");
-			return Response.status(404).entity(map).build();
+			return Response.status(200).entity(map).build();
 		} else {
 			Map<String, String> map = new HashMap<>();
 			map.put("message", "Sorry id: "+id+" not found");
